@@ -23,7 +23,32 @@ document.addEventListener('DOMContentLoaded', function () {
         { lat: -25.529267798841143, lng:-49.2305256, name: 'Ecoponto Vila Nova', address: 'R. TEN. CEL. VILAGRAN CABRITA, 2495' },
         { lat: -25.53041986277671, lng:-49.340937499999995, name: 'Ecoponto Vila Verde', address: 'R. LYDIO PAULO BETTEGA, 200' },
     ];
-     
+      // Adiciona marcadores no mapa
+    pontosDeColeta.forEach(function (ponto) {
+        L.marker([ponto.lat, ponto.lng])
+            .addTo(map)
+            .bindPopup('<b>' + ponto.name + '</b><br>' + ponto.address);
+    });
+
+    // Função de busca
+    window.pontosColeta = function () {
+        var searchTerm = document.getElementById('busca').value.toLowerCase();
+        var filteredPoints = pontosDeColeta.filter(function (ponto) {
+            return ponto.name.toLowerCase().includes(searchTerm) || ponto.address.toLowerCase().includes(searchTerm);
+        });
+
+        if (filteredPoints.length > 0) {
+            var firstPoint = filteredPoints[0];
+            map.setView([firstPoint.lat, firstPoint.lng], 15);
+            L.popup()
+                .setLatLng([firstPoint.lat, firstPoint.lng])
+                .setContent('<b>' + firstPoint.name + '</b><br>' + firstPoint.address)
+                .openOn(map);
+        } else {
+            alert('Nenhum ponto de coleta encontrado.');
+        }
+    };
+});
 function mostraCaiua() {
     const caiua = document.querySelector("#caiua");
     caiua.showModal();
